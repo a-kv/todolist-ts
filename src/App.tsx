@@ -6,15 +6,15 @@ import AddItemForm from "./components/AddItemForm";
 import {AppBar, Button, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 
-export type FilterValueType = 'all' | 'active' | 'completed';
+export type FilterValuesType = 'all' | 'active' | 'completed';
 
 export type TodoListType = {
     id: string,
     title: string,
-    filter: FilterValueType
+    filter: FilterValuesType
 }
-type TasksStateType = {
-    [key: string]: Array<TaskType>
+export type TasksStateType = {
+    [key: string]: Array<TaskType> //ассоциативный массив
 }
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
         ],
     })
 
-    function changeFilter(value: FilterValueType, todoListId: string) {
+    function changeFilter(value: FilterValuesType, todoListId: string) {
         let todo = todoLists.find(tl => tl.id === todoListId);
         if (todo) {
             todo.filter = value
@@ -77,6 +77,12 @@ function App() {
             task.title = title;
             setTasks({...tasks});
         }
+    }
+    function removeTodoList(todoListId: string) {
+        let newTodoLists = todoLists.filter(tl => tl.id !== todoListId);
+        setTodoLists(newTodoLists);
+        delete tasks[todoListId];
+        setTasks({...tasks})
     }
 
     function addTodoList(title: string) {
@@ -132,6 +138,7 @@ function App() {
                                     changeTaskStatus={changeTaskStatus}
                                     filter={tl.filter}
                                     changeTitle={changeTitle}
+                                    removeTodoList={removeTodoList}
                                 />
                             </Paper>
                         </Grid>
